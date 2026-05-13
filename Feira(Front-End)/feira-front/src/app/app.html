@@ -1,0 +1,22 @@
+<nav>
+  <a
+    routerLink="/"
+    routerLinkActive="ativo"
+    [routerLinkActiveOptions]="{ exact: true }">
+    Início
+  </a>
+
+  <a
+    routerLink="/feirantes"
+    routerLinkActive="ativo">
+    Feirantes
+  </a>
+
+  <a
+    routerLink="/categorias"
+    routerLinkActive="ativo">
+    Categorias
+  </a>
+</nav>
+
+<router-outlet></router-outlet>

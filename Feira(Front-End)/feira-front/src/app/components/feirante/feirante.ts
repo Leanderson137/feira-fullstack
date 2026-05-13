@@ -1,0 +1,190 @@
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
+import { Feirante } from '../../models/feirante';
+import { FeiranteRequest } from '../../models/feirante-request';
+import { Categoria } from '../../models/categoria';
+
+import { FeiranteService } from '../../services/feirante.service';
+import { CategoriaService } from '../../services/categoria.service';
+
+@Component({
+  selector: 'app-feirante',
+  standalone: true,
+  imports: [FormsModule, CommonModule],
+  templateUrl: './feirante.html',
+  styleUrl: './feirante.css'
+})
+export class FeiranteComponent implements OnInit {
+
+  nome = '';
+  cpf = '';
+  ativo = true;
+  categoriaId: number | null = null;
+  mensagem = '';
+
+  idEmEdicao: number | null = null;
+
+  feirantes: Feirante[] = [];
+  categorias: Categoria[] = [];
+
+  constructor(
+    private feiranteService: FeiranteService,
+    private categoriaService: CategoriaService
+  ) {}
+
+  ngOnInit(): void {
+    this.listarFeirantes();
+    this.listarCategorias();
+  }
+
+  listarFeirantes(): void {
+    this.feiranteService.listar().subscribe({
+      next: (dados) => {
+        this.feirantes = dados;
+      },
+      error: () => {
+        this.mensagem = 'Erro ao listar feirantes.';
+      }
+    });
+  }
+
+  listarCategorias(): void {
+    this.categoriaService.listar().subscribe({
+      next: (dados) => {
+        this.categorias = dados;
+      },
+      error: () => {
+        this.mensagem = 'Erro ao carregar categorias.';
+      }
+    });
+  }
+
+  cadastrar(): void {
+
+    if (
+      this.nome.trim() === '' ||
+      this.cpf.trim() === '' ||
+      this.categoriaId === null
+    ) {
+      this.mensagem = 'Preencha todos os campos obrigatórios.';
+      return;
+    }
+
+    if (this.nome.trim().length < 3) {
+      this.mensagem = 'Nome deve ter pelo menos 3 caracteres.';
+      return;
+    }
+
+    const cpfValido = /^\d{11}$/.test(this.cpf);
+
+    if (!cpfValido) {
+      this.mensagem = 'CPF inválido.';
+      return;
+    }
+
+    const feiranteRequest: FeiranteRequest = {
+      nome: this.nome.trim(),
+      cpf: this.cpf,
+      ativo: this.ativo,
+      categoriaId: this.categoriaId
+    };
+
+    if (this.idEmEdicao === null) {
+
+      this.feiranteService.cadastrar(feiranteRequest).subscribe({
+        next: () => {
+
+          this.mensagem = 'Feirante cadastrado com sucesso.';
+
+          this.limparFormulario();
+
+          this.listarFeirantes();
+        },
+        error: (erro) => {
+
+          this.mensagem =
+            erro.error?.erro || 'Erro ao cadastrar feirante.';
+        }
+      });
+
+    } else {
+
+      this.feiranteService.atualizar(this.idEmEdicao, feiranteRequest).subscribe({
+        next: () => {
+
+          this.idEmEdicao = null;
+
+          this.limparFormulario();
+
+          this.mensagem = 'Feirante atualizado com sucesso.';
+
+          this.listarFeirantes();
+        },
+        error: (erro) => {
+
+          this.mensagem =
+            erro.error?.erro || 'Erro ao atualizar feirante.';
+        }
+      });
+    }
+  }
+
+  editar(feirante: Feirante): void {
+
+    this.nome = feirante.nome;
+    this.cpf = feirante.cpf;
+    this.ativo = feirante.ativo;
+    this.categoriaId = feirante.categoria.id;
+
+    this.idEmEdicao = feirante.id;
+
+    this.mensagem = 'Editando feirante.';
+  }
+
+  excluir(feirante: Feirante): void {
+
+    const confirmar = confirm(
+      'Tem certeza que deseja excluir este feirante?'
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    this.feiranteService.excluir(feirante.id).subscribe({
+      next: () => {
+
+        this.mensagem = 'Feirante excluído com sucesso.';
+
+        this.listarFeirantes();
+
+        if (this.idEmEdicao === feirante.id) {
+          this.cancelarEdicao();
+        }
+      },
+      error: () => {
+
+        this.mensagem = 'Erro ao excluir feirante.';
+      }
+    });
+  }
+
+  cancelarEdicao(): void {
+
+    this.idEmEdicao = null;
+
+    this.limparFormulario();
+
+    this.mensagem = 'Edição cancelada.';
+  }
+
+  limparFormulario(): void {
+
+    this.nome = '';
+    this.cpf = '';
+    this.ativo = true;
+    this.categoriaId = null;
+  }
+}

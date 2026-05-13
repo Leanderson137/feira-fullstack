@@ -1,0 +1,19 @@
+nav {
+  background-color: #2f3640;
+  padding: 16px 32px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-right: 24px;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+nav a.ativo {
+  color: #00a8ff;
+}

@@ -1,0 +1,158 @@
+<section class="page-container">
+
+  <h1>Cadastro de Feirantes</h1>
+
+  <section class="card">
+
+    <p class="mensagem">
+      {{ mensagem }}
+    </p>
+
+    <form>
+
+      <div class="form-group">
+
+        <label>Nome</label>
+
+        <input
+          type="text"
+          name="nome"
+          [(ngModel)]="nome">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>CPF</label>
+
+        <input
+          type="text"
+          name="cpf"
+          maxlength="11"
+          [(ngModel)]="cpf">
+
+      </div>
+
+      <div class="form-group checkbox-container">
+
+        <input
+          type="checkbox"
+          name="ativo"
+          [(ngModel)]="ativo">
+
+        <label>Ativo</label>
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Categoria</label>
+
+        <select
+          name="categoriaId"
+          [(ngModel)]="categoriaId">
+
+          <option [ngValue]="null">
+            Selecione uma categoria
+          </option>
+
+          <option
+            *ngFor="let categoria of categorias"
+            [ngValue]="categoria.id">
+
+            {{ categoria.nome }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+      <button
+        type="button"
+        (click)="cadastrar()">
+
+        {{ idEmEdicao === null ? 'Cadastrar' : 'Atualizar' }}
+
+      </button>
+
+      <button
+        *ngIf="idEmEdicao !== null"
+        type="button"
+        (click)="cancelarEdicao()">
+
+        Cancelar edição
+
+      </button>
+
+    </form>
+
+  </section>
+
+  <section class="card">
+
+    <h2>Lista de Feirantes</h2>
+
+    <p *ngIf="feirantes.length === 0">
+      Nenhum feirante cadastrado.
+    </p>
+
+    <table *ngIf="feirantes.length > 0">
+
+      <thead>
+
+        <tr>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Ativo</th>
+          <th>Categoria</th>
+          <th>Ações</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let feirante of feirantes">
+
+          <td>{{ feirante.nome }}</td>
+
+          <td>{{ feirante.cpf }}</td>
+
+          <td>
+            {{ feirante.ativo ? 'Sim' : 'Não' }}
+          </td>
+
+          <td>
+            {{ feirante.categoria.nome }}
+          </td>
+
+          <td>
+
+            <button
+              type="button"
+              (click)="editar(feirante)">
+
+              Editar
+
+            </button>
+
+            <button
+              type="button"
+              (click)="excluir(feirante)">
+
+              Excluir
+
+            </button>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </section>
+
+</section>
