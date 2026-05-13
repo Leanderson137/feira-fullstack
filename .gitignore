@@ -1,0 +1,10 @@
+node_modules/
+target/
+dist/
+.angular/
+.idea/
+.vscode/
+*.log
+*.db
+*.mv.db
+data/
