@@ -16,6 +16,7 @@ O projeto foi desenvolvido como atividade acadêmica utilizando metodologia Scru
 
 * Java 17
 * Spring Boot
+* Spring Web
 * Spring Data JPA
 * Maven
 * H2 Database
@@ -41,25 +42,11 @@ O projeto foi desenvolvido como atividade acadêmica utilizando metodologia Scru
 
 # Funcionalidades
 
-## Categorias
-
-* Cadastrar categoria
-* Listar categorias
-* Editar categoria
-* Excluir categoria
-* Bloquear exclusão de categoria em uso
-* Validação de campos obrigatórios
-* Tratamento de categorias duplicadas
-
-## Feirantes
-
-* Cadastrar feirante
-* Listar feirantes
-* Editar feirante
-* Excluir feirante
-* Relacionamento com categoria
-* Validação de CPF
-* Tratamento de CPF duplicado
+* Cadastro, listagem, edição e remoção de categorias
+* Cadastro, listagem, edição e remoção de feirantes
+* Integração entre Angular e Spring Boot
+* Validações e tratamento de erros
+* Persistência de dados com H2
 
 ---
 
@@ -236,4 +223,5 @@ O projeto utiliza:
 
 # Autores
 
-Projeto desenvolvido para disciplina acadêmica utilizando Spring Boot e Angular.
+* Antonio Leanderson Pereira Lima - 2310423
+* Caio Gabriel Araújo Alves - 2510560
