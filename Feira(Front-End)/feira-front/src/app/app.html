@@ -1,21 +1,47 @@
-<router-outlet *ngIf="estaNaTelaLogin()"></router-outlet>
+<router-outlet *ngIf="estaEmTelaPublica()"></router-outlet>
 
 <div
   class="layout"
-  *ngIf="!estaNaTelaLogin()">
+  *ngIf="!estaEmTelaPublica()">
 
-  <aside class="sidebar">
+  <aside
+    class="sidebar"
+    [class.minimizada]="sidebarMinimizada">
 
-    <div class="logo-area">
+    <div class="top-sidebar">
 
-      <div class="logo-icon">
-        ◇
+      <div
+        class="logo-area"
+        *ngIf="!sidebarMinimizada">
+
+        <div class="logo-icon">
+          ◇
+        </div>
+
+        <div>
+          <h2>Feira</h2>
+          <small>Gestão Feira</small>
+        </div>
+
       </div>
 
-      <div>
-        <h2>Feira</h2>
-        <small>Management System</small>
-      </div>
+      <button
+        class="toggle-button"
+        (click)="alternarSidebar()">
+
+        {{ sidebarMinimizada ? '☰' : '←' }}
+
+      </button>
+
+    </div>
+
+    <div
+      class="usuario-box"
+      *ngIf="!sidebarMinimizada">
+
+      <strong>
+        Olá, {{ pegarNomeUsuario() }}
+      </strong>
 
     </div>
 
@@ -25,8 +51,11 @@
         routerLink="/home"
         routerLinkActive="active">
 
-        <span>⌂</span>
-        Início
+        <span>🏡</span>
+
+        <span *ngIf="!sidebarMinimizada">
+          Início
+        </span>
 
       </a>
 
@@ -35,7 +64,10 @@
         routerLinkActive="active">
 
         <span>👥</span>
-        Feirantes
+
+        <span *ngIf="!sidebarMinimizada">
+          Feirantes
+        </span>
 
       </a>
 
@@ -44,7 +76,10 @@
         routerLinkActive="active">
 
         <span>🗂️</span>
-        Categorias
+
+        <span *ngIf="!sidebarMinimizada">
+          Categorias
+        </span>
 
       </a>
 
@@ -54,7 +89,10 @@
         (click)="sair()">
 
         <span>↩</span>
-        Sair
+
+        <span *ngIf="!sidebarMinimizada">
+          Sair
+        </span>
 
       </button>
 

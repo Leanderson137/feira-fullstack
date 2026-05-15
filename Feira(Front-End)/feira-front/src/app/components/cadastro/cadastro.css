@@ -5,7 +5,7 @@
   background: linear-gradient(135deg, #e4f4eb, #f5f6fa);
 }
 
-.login-page {
+.cadastro-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -13,9 +13,9 @@
   padding: 32px;
 }
 
-.login-card {
+.cadastro-card {
   width: 100%;
-  max-width: 430px;
+  max-width: 440px;
   background: #fff;
   padding: 36px;
   border-radius: 22px;
@@ -116,13 +116,13 @@ button:hover {
   background-color: #05642a;
 }
 
-.cadastro-link {
+.login-link {
   text-align: center;
   margin-top: 22px;
   color: #3d473d;
 }
 
-.cadastro-link a {
+.login-link a {
   color: #087a35;
   font-weight: bold;
   text-decoration: none;

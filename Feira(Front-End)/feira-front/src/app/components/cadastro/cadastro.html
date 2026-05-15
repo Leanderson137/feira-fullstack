@@ -1,6 +1,6 @@
-<section class="login-page">
+<section class="cadastro-page">
 
-  <div class="login-card">
+  <div class="cadastro-card">
 
     <div class="brand">
 
@@ -15,10 +15,10 @@
 
     </div>
 
-    <h2>Bem-vindo</h2>
+    <h2>Criar conta</h2>
 
     <p class="subtitle">
-      Faça login para acessar o sistema.
+      Cadastre um usuário para acessar o sistema.
     </p>
 
     <p
@@ -30,6 +30,18 @@
     </p>
 
     <form>
+
+      <div class="field">
+
+        <label>Nome</label>
+
+        <input
+          type="text"
+          name="nome"
+          placeholder="Digite seu nome"
+          [(ngModel)]="nome">
+
+      </div>
 
       <div class="field">
 
@@ -52,7 +64,7 @@
           <input
             [type]="mostrarSenha ? 'text' : 'password'"
             name="senha"
-            placeholder="Digite sua senha"
+            placeholder="Mínimo de 8 caracteres"
             [(ngModel)]="senha">
 
           <button
@@ -68,22 +80,47 @@
 
       </div>
 
+      <div class="field">
+
+        <label>Confirmar senha</label>
+
+        <div class="password-wrapper">
+
+          <input
+            [type]="mostrarConfirmarSenha ? 'text' : 'password'"
+            name="confirmarSenha"
+            placeholder="Repita a senha"
+            [(ngModel)]="confirmarSenha">
+
+          <button
+            type="button"
+            class="eye-button"
+            (click)="alternarConfirmarSenha()">
+
+            {{ mostrarConfirmarSenha ? '👁' : '👁️‍🗨️' }}
+
+          </button>
+
+        </div>
+
+      </div>
+
       <button
         type="button"
-        (click)="entrar()">
+        (click)="cadastrar()">
 
-        Entrar
+        Cadastrar
 
       </button>
 
     </form>
 
-    <p class="cadastro-link">
+    <p class="login-link">
 
-      Ainda não possui conta?
+      Já possui conta?
 
-      <a routerLink="/cadastro">
-        Criar conta
+      <a routerLink="/login">
+        Entrar
       </a>
 
     </p>

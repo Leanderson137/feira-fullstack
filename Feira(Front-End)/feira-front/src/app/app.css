@@ -14,17 +14,28 @@
   width: 260px;
   background-color: #ffffff;
   border-right: 1px solid #e8ece8;
-  padding: 28px 20px;
+  padding: 24px 18px;
   display: flex;
   flex-direction: column;
   box-shadow: 4px 0 18px rgba(0, 0, 0, 0.04);
+  transition: 0.25s;
+}
+
+.sidebar.minimizada {
+  width: 88px;
+}
+
+.top-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .logo-area {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 42px;
 }
 
 .logo-icon {
@@ -49,13 +60,42 @@
   color: #667066;
 }
 
+.toggle-button {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background-color: #f5f6fa;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.2s;
+}
+
+.toggle-button:hover {
+  background-color: #e8ece8;
+}
+
+.usuario-box {
+  margin-bottom: 28px;
+  padding: 14px 16px;
+  background-color: #f5f6fa;
+  border-radius: 14px;
+}
+
+.usuario-box strong {
+  color: #087a35;
+  font-size: 15px;
+  font-weight: 600;
+}
+
 .menu {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.menu a {
+.menu a,
+.logout-button {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -65,6 +105,10 @@
   border-radius: 12px;
   font-weight: bold;
   transition: 0.2s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
 }
 
 .menu a:hover {
@@ -76,7 +120,16 @@
   color: #fff;
 }
 
-.menu a span {
+.logout-button {
+  color: #b92a2a;
+}
+
+.logout-button:hover {
+  background-color: #fff0f0;
+}
+
+.menu a span:first-child,
+.logout-button span:first-child {
   font-size: 18px;
 }
 
@@ -91,32 +144,13 @@
     flex-direction: column;
   }
 
-  .sidebar {
+  .sidebar,
+  .sidebar.minimizada {
     width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #e8ece8;
   }
 
   .menu {
     flex-direction: row;
     flex-wrap: wrap;
   }
-}
-.logout-button {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: none;
-  background: transparent;
-  color: #b92a2a;
-  padding: 14px 16px;
-  border-radius: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 15px;
-  text-align: left;
-}
-
-.logout-button:hover {
-  background-color: #fff0f0;
 }
