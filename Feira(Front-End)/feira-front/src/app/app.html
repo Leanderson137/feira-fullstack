@@ -1,22 +1,71 @@
-<nav>
-  <a
-    routerLink="/"
-    routerLinkActive="ativo"
-    [routerLinkActiveOptions]="{ exact: true }">
-    Início
-  </a>
+<router-outlet *ngIf="estaNaTelaLogin()"></router-outlet>
 
-  <a
-    routerLink="/feirantes"
-    routerLinkActive="ativo">
-    Feirantes
-  </a>
+<div
+  class="layout"
+  *ngIf="!estaNaTelaLogin()">
 
-  <a
-    routerLink="/categorias"
-    routerLinkActive="ativo">
-    Categorias
-  </a>
-</nav>
+  <aside class="sidebar">
 
-<router-outlet></router-outlet>
+    <div class="logo-area">
+
+      <div class="logo-icon">
+        ◇
+      </div>
+
+      <div>
+        <h2>Feira</h2>
+        <small>Management System</small>
+      </div>
+
+    </div>
+
+    <nav class="menu">
+
+      <a
+        routerLink="/home"
+        routerLinkActive="active">
+
+        <span>⌂</span>
+        Início
+
+      </a>
+
+      <a
+        routerLink="/feirantes"
+        routerLinkActive="active">
+
+        <span>👥</span>
+        Feirantes
+
+      </a>
+
+      <a
+        routerLink="/categorias"
+        routerLinkActive="active">
+
+        <span>🗂️</span>
+        Categorias
+
+      </a>
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="sair()">
+
+        <span>↩</span>
+        Sair
+
+      </button>
+
+    </nav>
+
+  </aside>
+
+  <main class="content">
+
+    <router-outlet></router-outlet>
+
+  </main>
+
+</div>

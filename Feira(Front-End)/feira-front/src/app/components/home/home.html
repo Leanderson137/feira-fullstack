@@ -1,59 +1,86 @@
-<section class="home-container">
+<section class="home-page">
 
   <section class="hero">
 
-    <h1>Sistema Feira</h1>
+    <div class="hero-content">
 
-    <p>
-      Sistema para gerenciamento de feirantes e categorias.
-      Cadastre, edite, liste e organize informações da feira
-      de forma simples e intuitiva.
-    </p>
+      <span class="eyebrow">
+        Sistema Feira
+      </span>
+
+      <h1>
+        Gerencie sua feira com mais organização
+      </h1>
+
+      <p>
+        Cadastre feirantes, organize categorias e acompanhe as informações
+        principais do sistema de forma simples e prática.
+      </p>
+
+      <div class="hero-actions">
+
+        <a
+          routerLink="/feirantes"
+          class="primary-link">
+          Acessar Feirantes
+        </a>
+
+        <a
+          routerLink="/categorias"
+          class="secondary-link">
+          Acessar Categorias
+        </a>
+
+      </div>
+
+    </div>
 
   </section>
 
-  <section class="cards">
+  <section class="features">
 
     <a
-      class="card"
-      routerLink="/feirantes">
+      routerLink="/feirantes"
+      class="feature-card">
 
-      <div class="card-icon">
-        👨‍🌾
+      <div class="feature-icon">
+        👥
       </div>
 
       <h2>Feirantes</h2>
 
       <p>
-        Gerencie os feirantes cadastrados no sistema,
-        incluindo cadastro, edição e exclusão.
+        Cadastre, consulte, edite e remova feirantes vinculados
+        às categorias da feira.
       </p>
+
+      <span class="feature-link">
+        Abrir tela →
+      </span>
 
     </a>
 
     <a
-      class="card"
-      routerLink="/categorias">
+      routerLink="/categorias"
+      class="feature-card">
 
-      <div class="card-icon">
+      <div class="feature-icon">
         🗂️
       </div>
 
       <h2>Categorias</h2>
 
       <p>
-        Organize as categorias utilizadas pelos feirantes
-        para facilitar o gerenciamento da feira.
+        Organize os tipos de produtos e setores utilizados pelos feirantes
+        no sistema.
       </p>
+
+      <span class="feature-link">
+        Abrir tela →
+      </span>
 
     </a>
 
   </section>
-
-  <div class="footer-info">
-
-    Projeto desenvolvido com Angular.
-
-  </div>
 
 </section>

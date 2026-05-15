@@ -1,19 +1,122 @@
-nav {
-  background-color: #2f3640;
-  padding: 16px 32px;
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f5f6fa;
+  font-family: Arial, sans-serif;
 }
 
-nav a {
-  color: white;
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: #ffffff;
+  border-right: 1px solid #e8ece8;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 18px rgba(0, 0, 0, 0.04);
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 42px;
+}
+
+.logo-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background-color: #087a35;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.logo-area h2 {
+  margin: 0;
+  color: #111;
+  font-size: 24px;
+}
+
+.logo-area small {
+  color: #667066;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   text-decoration: none;
-  margin-right: 24px;
+  color: #2f3a2f;
+  padding: 14px 16px;
+  border-radius: 12px;
   font-weight: bold;
+  transition: 0.2s;
 }
 
-nav a:hover {
-  text-decoration: underline;
+.menu a:hover {
+  background-color: #edf4ff;
 }
 
-nav a.ativo {
-  color: #00a8ff;
+.menu a.active {
+  background-color: #087a35;
+  color: #fff;
+}
+
+.menu a span {
+  font-size: 18px;
+}
+
+.content {
+  flex: 1;
+  overflow-x: hidden;
+}
+
+@media (max-width: 900px) {
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e8ece8;
+  }
+
+  .menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  background: transparent;
+  color: #b92a2a;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 15px;
+  text-align: left;
+}
+
+.logout-button:hover {
+  background-color: #fff0f0;
 }

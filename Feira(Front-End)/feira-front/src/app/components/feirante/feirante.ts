@@ -61,11 +61,39 @@ export class FeiranteComponent implements OnInit {
     });
   }
 
-  cadastrar(): void {
+  permitirSomenteNumeros(event: KeyboardEvent): void {
+    const tecla = event.key;
+
+    if (!/^\d$/.test(tecla)) {
+      event.preventDefault();
+    }
+  }
+
+  formatarCpf(): void {
+    let numeros = this.cpf.replace(/\D/g, '');
+
+    if (numeros.length > 11) {
+      numeros = numeros.substring(0, 11);
+    }
+
+    if (numeros.length <= 3) {
+      this.cpf = numeros;
+    } else if (numeros.length <= 6) {
+      this.cpf = `${numeros.substring(0, 3)}.${numeros.substring(3)}`;
+    } else if (numeros.length <= 9) {
+      this.cpf = `${numeros.substring(0, 3)}.${numeros.substring(3, 6)}.${numeros.substring(6)}`;
+    } else {
+      this.cpf = `${numeros.substring(0, 3)}.${numeros.substring(3, 6)}.${numeros.substring(6, 9)}-${numeros.substring(9)}`;
+    }
+  }
+
+  salvar(): void {
+
+    const cpfNumeros = this.cpf.replace(/\D/g, '');
 
     if (
       this.nome.trim() === '' ||
-      this.cpf.trim() === '' ||
+      cpfNumeros.trim() === '' ||
       this.categoriaId === null
     ) {
       this.mensagem = 'Preencha todos os campos obrigatórios.';
@@ -77,7 +105,7 @@ export class FeiranteComponent implements OnInit {
       return;
     }
 
-    const cpfValido = /^\d{11}$/.test(this.cpf);
+    const cpfValido = /^\d{11}$/.test(cpfNumeros);
 
     if (!cpfValido) {
       this.mensagem = 'CPF inválido.';
@@ -86,7 +114,7 @@ export class FeiranteComponent implements OnInit {
 
     const feiranteRequest: FeiranteRequest = {
       nome: this.nome.trim(),
-      cpf: this.cpf,
+      cpf: cpfNumeros,
       ativo: this.ativo,
       categoriaId: this.categoriaId
     };
@@ -95,15 +123,11 @@ export class FeiranteComponent implements OnInit {
 
       this.feiranteService.cadastrar(feiranteRequest).subscribe({
         next: () => {
-
           this.mensagem = 'Feirante cadastrado com sucesso.';
-
           this.limparFormulario();
-
           this.listarFeirantes();
         },
         error: (erro) => {
-
           this.mensagem =
             erro.error?.erro || 'Erro ao cadastrar feirante.';
         }
@@ -113,17 +137,12 @@ export class FeiranteComponent implements OnInit {
 
       this.feiranteService.atualizar(this.idEmEdicao, feiranteRequest).subscribe({
         next: () => {
-
           this.idEmEdicao = null;
-
           this.limparFormulario();
-
           this.mensagem = 'Feirante atualizado com sucesso.';
-
           this.listarFeirantes();
         },
         error: (erro) => {
-
           this.mensagem =
             erro.error?.erro || 'Erro ao atualizar feirante.';
         }
@@ -132,22 +151,17 @@ export class FeiranteComponent implements OnInit {
   }
 
   editar(feirante: Feirante): void {
-
     this.nome = feirante.nome;
     this.cpf = feirante.cpf;
+    this.formatarCpf();
     this.ativo = feirante.ativo;
     this.categoriaId = feirante.categoria.id;
-
     this.idEmEdicao = feirante.id;
-
     this.mensagem = 'Editando feirante.';
   }
 
   excluir(feirante: Feirante): void {
-
-    const confirmar = confirm(
-      'Tem certeza que deseja excluir este feirante?'
-    );
+    const confirmar = confirm('Tem certeza que deseja excluir este feirante?');
 
     if (!confirmar) {
       return;
@@ -155,9 +169,7 @@ export class FeiranteComponent implements OnInit {
 
     this.feiranteService.excluir(feirante.id).subscribe({
       next: () => {
-
         this.mensagem = 'Feirante excluído com sucesso.';
-
         this.listarFeirantes();
 
         if (this.idEmEdicao === feirante.id) {
@@ -165,23 +177,18 @@ export class FeiranteComponent implements OnInit {
         }
       },
       error: () => {
-
         this.mensagem = 'Erro ao excluir feirante.';
       }
     });
   }
 
   cancelarEdicao(): void {
-
     this.idEmEdicao = null;
-
     this.limparFormulario();
-
     this.mensagem = 'Edição cancelada.';
   }
 
   limparFormulario(): void {
-
     this.nome = '';
     this.cpf = '';
     this.ativo = true;

@@ -1,158 +1,222 @@
-<section class="page-container">
+<section class="page">
 
-  <h1>Cadastro de Feirantes</h1>
+  <header class="top-header">
 
-  <section class="card">
+    <div>
+      <h1>Gestão de Feirantes</h1>
+      <p>Cadastre e acompanhe os vendedores da sua feira.</p>
+    </div>
 
-    <p class="mensagem">
-      {{ mensagem }}
-    </p>
+    <div class="summary-cards">
 
-    <form>
+      <div class="summary-card">
+        <span class="summary-icon">👥</span>
+        <div>
+          <small>Total feirantes</small>
+          <strong>{{ feirantes.length }} cadastrados</strong>
+        </div>
+      </div>
 
-      <div class="form-group">
+      <div class="summary-card">
+        <span class="summary-icon">✓</span>
+        <div>
+          <small>Ativos</small>
+          <strong>{{ feirantes.length }} registros</strong>
+        </div>
+      </div>
 
-        <label>Nome</label>
+    </div>
 
-        <input
-          type="text"
-          name="nome"
-          [(ngModel)]="nome">
+  </header>
+
+  <main class="content-grid">
+
+    <section class="form-card">
+
+      <div class="section-title">
+        <span>✎</span>
+        <h2>Cadastro de Feirantes</h2>
+      </div>
+
+      <p
+        *ngIf="mensagem"
+        class="message">
+        {{ mensagem }}
+      </p>
+
+      <form>
+
+        <div class="field">
+          <label>Nome do Feirante</label>
+
+          <input
+            type="text"
+            name="nome"
+            placeholder="Ex: João da Silva"
+            [(ngModel)]="nome">
+        </div>
+
+        <div class="field">
+          <label>CPF</label>
+
+          <input
+            type="text"
+            name="cpf"
+            maxlength="14"
+            placeholder="000.000.000-00"
+            [(ngModel)]="cpf"
+            (keypress)="permitirSomenteNumeros($event)"
+            (input)="formatarCpf()">
+        </div>
+
+        <div class="field">
+          <label>Categoria</label>
+
+          <select
+            name="categoriaId"
+            [(ngModel)]="categoriaId">
+
+            <option [ngValue]="null">
+              Selecione uma categoria
+            </option>
+
+            <option
+              *ngFor="let categoria of categorias"
+              [ngValue]="categoria.id">
+
+              {{ categoria.nome }}
+
+            </option>
+
+          </select>
+        </div>
+
+        <div class="checkbox-field">
+          <input
+            type="checkbox"
+            name="ativo"
+            [(ngModel)]="ativo">
+
+          <label>Feirante ativo</label>
+        </div>
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="salvar()">
+
+          {{ idEmEdicao === null ? 'Salvar Feirante' : 'Atualizar Feirante' }}
+
+        </button>
+
+        <button
+          *ngIf="idEmEdicao !== null"
+          type="button"
+          class="secondary-button"
+          (click)="cancelarEdicao()">
+
+          Cancelar edição
+
+        </button>
+
+      </form>
+
+      <div class="tip-card">
+        <span>💡</span>
+        <p>
+          <strong>Dica:</strong>
+          Mantenha os dados do feirante sempre atualizados para facilitar o gerenciamento da feira.
+        </p>
+      </div>
+
+    </section>
+
+    <section class="list-area">
+
+      <div class="list-header">
+        <h2>Lista de Feirantes</h2>
+
+        <div class="view-buttons">
+          <button type="button">▦</button>
+          <button type="button">☷</button>
+        </div>
+      </div>
+
+      <p
+        *ngIf="feirantes.length === 0"
+        class="empty-message">
+        Nenhum feirante cadastrado.
+      </p>
+
+      <div class="vendor-grid">
+
+        <article
+          *ngFor="let feirante of feirantes"
+          class="vendor-card">
+
+          <div class="avatar">
+            {{ feirante.nome.charAt(0).toUpperCase() }}
+          </div>
+
+          <div class="vendor-info">
+
+            <h3>{{ feirante.nome }}</h3>
+
+            <p class="cpf">
+              CPF: {{ feirante.cpf }}
+            </p>
+
+            <p>
+              Categoria:
+              <strong>{{ feirante.categoria.nome }}</strong>
+            </p>
+
+          </div>
+
+          <div class="card-footer">
+
+            <span
+              class="status-badge"
+              [class.inactive]="!feirante.ativo">
+
+              {{ feirante.ativo ? 'Ativo' : 'Inativo' }}
+
+            </span>
+
+            <div class="actions">
+
+              <button
+                type="button"
+                class="edit-button"
+                (click)="editar(feirante)">
+                Editar
+              </button>
+
+              <button
+                type="button"
+                class="delete-button"
+                (click)="excluir(feirante)">
+                Excluir
+              </button>
+
+            </div>
+
+          </div>
+
+        </article>
 
       </div>
 
-      <div class="form-group">
+      <footer
+        *ngIf="feirantes.length > 0"
+        class="pagination-info">
 
-        <label>CPF</label>
+        Exibindo {{ feirantes.length }} feirante(s) cadastrado(s)
 
-        <input
-          type="text"
-          name="cpf"
-          maxlength="11"
-          [(ngModel)]="cpf">
+      </footer>
 
-      </div>
+    </section>
 
-      <div class="form-group checkbox-container">
-
-        <input
-          type="checkbox"
-          name="ativo"
-          [(ngModel)]="ativo">
-
-        <label>Ativo</label>
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Categoria</label>
-
-        <select
-          name="categoriaId"
-          [(ngModel)]="categoriaId">
-
-          <option [ngValue]="null">
-            Selecione uma categoria
-          </option>
-
-          <option
-            *ngFor="let categoria of categorias"
-            [ngValue]="categoria.id">
-
-            {{ categoria.nome }}
-
-          </option>
-
-        </select>
-
-      </div>
-
-      <button
-        type="button"
-        (click)="cadastrar()">
-
-        {{ idEmEdicao === null ? 'Cadastrar' : 'Atualizar' }}
-
-      </button>
-
-      <button
-        *ngIf="idEmEdicao !== null"
-        type="button"
-        (click)="cancelarEdicao()">
-
-        Cancelar edição
-
-      </button>
-
-    </form>
-
-  </section>
-
-  <section class="card">
-
-    <h2>Lista de Feirantes</h2>
-
-    <p *ngIf="feirantes.length === 0">
-      Nenhum feirante cadastrado.
-    </p>
-
-    <table *ngIf="feirantes.length > 0">
-
-      <thead>
-
-        <tr>
-          <th>Nome</th>
-          <th>CPF</th>
-          <th>Ativo</th>
-          <th>Categoria</th>
-          <th>Ações</th>
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        <tr *ngFor="let feirante of feirantes">
-
-          <td>{{ feirante.nome }}</td>
-
-          <td>{{ feirante.cpf }}</td>
-
-          <td>
-            {{ feirante.ativo ? 'Sim' : 'Não' }}
-          </td>
-
-          <td>
-            {{ feirante.categoria.nome }}
-          </td>
-
-          <td>
-
-            <button
-              type="button"
-              (click)="editar(feirante)">
-
-              Editar
-
-            </button>
-
-            <button
-              type="button"
-              (click)="excluir(feirante)">
-
-              Excluir
-
-            </button>
-
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </section>
+  </main>
 
 </section>

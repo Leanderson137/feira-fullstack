@@ -1,0 +1,58 @@
+<section class="login-page">
+
+  <div class="login-card">
+
+    <div class="brand">
+      <div class="brand-icon">◇</div>
+
+      <div>
+        <h1>Feira</h1>
+        <p>Management System</p>
+      </div>
+    </div>
+
+    <h2>Entrar no sistema</h2>
+
+    <p class="subtitle">
+      Acesse sua conta para gerenciar feirantes e categorias.
+    </p>
+
+    <p
+      *ngIf="mensagem"
+      class="message">
+      {{ mensagem }}
+    </p>
+
+    <form>
+
+      <div class="field">
+        <label>E-mail</label>
+
+        <input
+          type="email"
+          name="email"
+          placeholder="exemplo@email.com"
+          [(ngModel)]="email">
+      </div>
+
+      <div class="field">
+        <label>Senha</label>
+
+        <input
+          type="password"
+          name="senha"
+          placeholder="Digite sua senha"
+          [(ngModel)]="senha">
+      </div>
+
+      <button
+        type="button"
+        (click)="entrar()">
+        Entrar
+      </button>
+
+    </form>
+
+  </div>
+
+</section>

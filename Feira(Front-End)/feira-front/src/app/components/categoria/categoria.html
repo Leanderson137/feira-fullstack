@@ -1,110 +1,182 @@
-<section class="page-container">
+<section class="page">
 
-  <h1>Cadastro de Categorias</h1>
+  <header class="top-header">
 
-  <section class="card">
+    <div>
+      <h1>Gestão de Categorias</h1>
+      <p>Organize e administre os departamentos da sua feira.</p>
+    </div>
 
-    <p class="mensagem">
-      {{ mensagem }}
-    </p>
+    <div class="summary-cards">
 
-    <form>
+      <div class="summary-card">
+        <span class="summary-icon">↗</span>
+        <div>
+          <small>Mais popular</small>
+          <strong>
+            {{ categorias.length > 0 ? categorias[0].nome : 'Nenhuma' }}
+          </strong>
+        </div>
+      </div>
 
-      <div class="form-group">
+      <div class="summary-card">
+        <span class="summary-icon">▣</span>
+        <div>
+          <small>Total categorias</small>
+          <strong>{{ categorias.length }} unidades</strong>
+        </div>
+      </div>
 
-        <label>Nome</label>
+    </div>
 
-        <input
-          type="text"
-          name="nome"
-          [(ngModel)]="nome">
+  </header>
+
+  <main class="content-grid">
+
+    <section class="form-card">
+
+      <div class="section-title">
+        <span>✎</span>
+        <h2>Cadastro de Categorias</h2>
+      </div>
+
+      <p
+        *ngIf="mensagem"
+        class="message">
+        {{ mensagem }}
+      </p>
+
+      <form>
+
+        <div class="field">
+          <label>Nome da Categoria</label>
+
+          <input
+            type="text"
+            name="nome"
+            placeholder="Ex: Legumes e Verduras"
+            [(ngModel)]="nome">
+        </div>
+
+        <div class="field">
+          <label>Descrição</label>
+
+          <textarea
+            name="descricao"
+            placeholder="Descreva os produtos que pertencem a esta categoria..."
+            [(ngModel)]="descricao">
+          </textarea>
+        </div>
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="salvar()">
+
+          {{ idEmEdicao === null ? 'Salvar Categoria' : 'Atualizar Categoria' }}
+
+        </button>
+
+        <button
+          *ngIf="idEmEdicao !== null"
+          type="button"
+          class="secondary-button"
+          (click)="cancelarEdicao()">
+
+          Cancelar edição
+
+        </button>
+
+      </form>
+
+      <div class="tip-card">
+        <span>💡</span>
+        <p>
+          <strong>Dica:</strong>
+          Categorias bem descritas ajudam a organizar melhor os feirantes.
+        </p>
+      </div>
+
+    </section>
+
+    <section class="list-area">
+
+      <div class="list-header">
+        <h2>Lista de Categorias</h2>
+
+        <div class="view-buttons">
+          <button type="button">▦</button>
+          <button type="button">☷</button>
+        </div>
+      </div>
+
+      <p
+        *ngIf="categorias.length === 0"
+        class="empty-message">
+        Nenhuma categoria cadastrada.
+      </p>
+
+      <div class="category-grid">
+
+        <article
+          *ngFor="let categoria of categorias"
+          class="category-card">
+
+          <div class="card-icon">
+            ◇
+          </div>
+
+          <h3>{{ categoria.nome }}</h3>
+
+          <p>
+            {{ categoria.descricao }}
+          </p>
+
+          <div class="card-footer">
+
+            <span class="status-badge">
+              Ativa
+            </span>
+
+            <div class="actions">
+
+              <button
+                type="button"
+                class="edit-button"
+                (click)="editar(categoria)">
+                Editar
+              </button>
+
+              <button
+                type="button"
+                class="delete-button"
+                (click)="excluir(categoria)">
+                Excluir
+              </button>
+
+            </div>
+
+          </div>
+
+        </article>
+
+        <article class="new-category-card">
+          <div class="plus-icon">+</div>
+          <p>Criar nova categoria</p>
+        </article>
 
       </div>
 
-      <div class="form-group">
+      <footer
+        *ngIf="categorias.length > 0"
+        class="pagination-info">
 
-        <label>Descrição</label>
+        Exibindo {{ categorias.length }} categoria(s) cadastrada(s)
 
-        <textarea
-          name="descricao"
-          [(ngModel)]="descricao">
-        </textarea>
+      </footer>
 
-      </div>
+    </section>
 
-      <button
-        type="button"
-        (click)="cadastrar()">
-
-        {{ indiceEdicao === null ? 'Cadastrar' : 'Atualizar' }}
-
-      </button>
-
-      <button
-        *ngIf="indiceEdicao !== null"
-        type="button"
-        (click)="cancelarEdicao()">
-
-        Cancelar edição
-
-      </button>
-
-    </form>
-
-  </section>
-
-  <section class="card">
-
-    <h2>Lista de Categorias</h2>
-
-    <p *ngIf="categorias.length === 0">
-      Nenhuma categoria cadastrada.
-    </p>
-
-    <table *ngIf="categorias.length > 0">
-
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Descrição</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        <tr *ngFor="let categoria of categorias; let i = index">
-
-          <td>{{ categoria.nome }}</td>
-
-          <td>{{ categoria.descricao }}</td>
-
-          <td>
-
-            <button
-              type="button"
-              (click)="editar(i)">
-
-              Editar
-
-            </button>
-
-            <button
-              type="button"
-              (click)="excluir(i)">
-
-              Excluir
-
-            </button>
-
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </section>
+  </main>
 
 </section>
