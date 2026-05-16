@@ -11,7 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categoria")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {
+        "http://localhost:4200",
+        "https://feira-fullstack.vercel.app"
+})
 public class CategoriaController {
 
     private final CategoriaService categoriaService;
