@@ -10,7 +10,7 @@ import { CategoriaRequest } from '../models/categoria-request';
 })
 export class CategoriaService {
 
-  private apiUrl = 'https://feira-fullstack.onrender.com/categorias';
+  private apiUrl = 'https://feira-fullstack.onrender.com/categoria';
 
   constructor(private http: HttpClient) {}
 
