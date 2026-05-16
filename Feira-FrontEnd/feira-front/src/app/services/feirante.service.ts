@@ -10,7 +10,7 @@ import { FeiranteRequest } from '../models/feirante-request';
 })
 export class FeiranteService {
 
-  private apiUrl = 'http://localhost:8080/feirante';
+  private apiUrl = 'https://feira-fullstack.onrender.com/feirantes';
 
   constructor(private http: HttpClient) {}
 
