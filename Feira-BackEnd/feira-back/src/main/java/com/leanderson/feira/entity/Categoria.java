@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Categoria {
@@ -16,24 +18,33 @@ public class Categoria {
 
     private String descricao;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     public Categoria() {
     }
 
     public Categoria(Long id, String nome, String descricao) {
         this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+    }
 
-        if (nome != null) {
-            this.nome = nome.trim();
-        }
-
-        if (descricao != null) {
-            this.descricao = descricao.trim();
-        }
+    public Categoria(Long id, String nome, String descricao, Usuario usuario) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.usuario = usuario;
     }
 
     public void validar() {
-        if (nome == null || nome.length() < 3) {
-            throw new IllegalArgumentException("Nome da categoria deve ter ao menos 3 caracteres.");
+        if (nome == null || nome.trim().length() < 3) {
+            throw new IllegalArgumentException("Nome deve ter pelo menos 3 caracteres.");
+        }
+
+        if (descricao == null || descricao.trim().isEmpty()) {
+            throw new IllegalArgumentException("Descrição é obrigatória.");
         }
     }
 
@@ -49,19 +60,23 @@ public class Categoria {
         return descricao;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
 
     public void setNome(String nome) {
-        if (nome != null) {
-            this.nome = nome.trim();
-        }
+        this.nome = nome;
     }
 
     public void setDescricao(String descricao) {
-        if (descricao != null) {
-            this.descricao = descricao.trim();
-        }
+        this.descricao = descricao;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
