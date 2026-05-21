@@ -29,6 +29,9 @@
 
     </p>
 
+
+    
+
     <form>
 
       <div class="field">
@@ -107,9 +110,10 @@
 
       <button
         type="button"
+        [disabled]="carregando"
         (click)="cadastrar()">
 
-        Cadastrar
+        {{ carregando ? 'Cadastrando...' : 'Cadastrar' }}
 
       </button>
 

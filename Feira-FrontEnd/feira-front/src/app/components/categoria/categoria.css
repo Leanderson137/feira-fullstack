@@ -378,3 +378,8 @@ textarea:focus {
     align-items: flex-start;
   }
 }
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
 
@@ -15,18 +16,14 @@ import { AuthService } from '../../services/auth.service';
 export class CadastroComponent {
 
   nome = '';
-
   email = '';
-
   senha = '';
-
   confirmarSenha = '';
-
   mensagem = '';
 
   mostrarSenha = false;
-
   mostrarConfirmarSenha = false;
+  carregando = false;
 
   constructor(
     private authService: AuthService,
@@ -35,59 +32,45 @@ export class CadastroComponent {
 
   cadastrar(): void {
 
+    if (this.carregando) {
+      return;
+    }
+
     if (
       this.nome.trim() === '' ||
       this.email.trim() === '' ||
       this.senha.trim() === '' ||
       this.confirmarSenha.trim() === ''
     ) {
-
-      this.mensagem =
-        'Preencha todos os campos.';
-
+      this.mensagem = 'Preencha todos os campos.';
       return;
     }
 
-    if (
-      this.nome.trim().length < 3
-    ) {
-
-      this.mensagem =
-        'Nome deve ter pelo menos 3 caracteres.';
-
+    if (this.nome.trim().length < 3) {
+      this.mensagem = 'Nome deve ter pelo menos 3 caracteres.';
       return;
     }
 
     const emailValido =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      .test(this.email);
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
 
     if (!emailValido) {
-
-      this.mensagem =
-        'E-mail inválido.';
-
+      this.mensagem = 'E-mail inválido.';
       return;
     }
 
     if (this.senha.length < 8) {
-
-      this.mensagem =
-        'A senha deve ter pelo menos 8 caracteres.';
-
+      this.mensagem = 'A senha deve ter pelo menos 8 caracteres.';
       return;
     }
 
-    if (
-      this.senha !==
-      this.confirmarSenha
-    ) {
-
-      this.mensagem =
-        'As senhas não coincidem.';
-
+    if (this.senha !== this.confirmarSenha) {
+      this.mensagem = 'As senhas não coincidem.';
       return;
     }
+
+    this.carregando = true;
+    this.mensagem = '';
 
     this.authService.cadastrar(
       this.nome,
@@ -100,20 +83,28 @@ export class CadastroComponent {
         this.authService.login(
           this.email,
           this.senha
-        ).subscribe({
+        )
+          .pipe(
+            finalize(() => {
+              this.carregando = false;
+            })
+          )
+          .subscribe({
 
-          next: (resposta) => {
+            next: (resposta) => {
 
-            this.authService.salvarLogin(
-              resposta.token,
-              resposta.nome
-            );
+              this.authService.salvarLogin(
+                resposta.token,
+                resposta.nome
+              );
 
-            this.router.navigate([
-              '/home'
-            ]);
-          }
-        });
+              this.router.navigate(['/home']);
+            },
+
+            error: () => {
+              this.mensagem = 'Usuário cadastrado, mas houve erro ao entrar.';
+            }
+          });
       },
 
       error: (erro) => {
@@ -121,19 +112,19 @@ export class CadastroComponent {
         this.mensagem =
           erro.error?.erro ||
           'Erro ao cadastrar usuário.';
+
+        this.carregando = false;
       }
     });
   }
 
   alternarSenha(): void {
 
-    this.mostrarSenha =
-      !this.mostrarSenha;
+    this.mostrarSenha = !this.mostrarSenha;
   }
 
   alternarConfirmarSenha(): void {
 
-    this.mostrarConfirmarSenha =
-      !this.mostrarConfirmarSenha;
+    this.mostrarConfirmarSenha = !this.mostrarConfirmarSenha;
   }
 }

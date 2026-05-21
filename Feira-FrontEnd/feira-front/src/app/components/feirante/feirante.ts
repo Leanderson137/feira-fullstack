@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs';
 
 import { Feirante } from '../../models/feirante';
 import { FeiranteRequest } from '../../models/feirante-request';
@@ -29,9 +30,15 @@ export class FeiranteComponent implements OnInit {
   feirantes: Feirante[] = [];
   categorias: Categoria[] = [];
 
+  carregandoFeirantes = false;
+  carregandoCategorias = false;
+  salvando = false;
+  excluindoId: number | null = null;
+
   constructor(
     private feiranteService: FeiranteService,
-    private categoriaService: CategoriaService
+    private categoriaService: CategoriaService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -40,31 +47,59 @@ export class FeiranteComponent implements OnInit {
   }
 
   listarFeirantes(): void {
-    this.feiranteService.listar().subscribe({
-      next: (dados) => {
-        this.feirantes = dados;
-      },
-      error: () => {
-        this.mensagem = 'Erro ao listar feirantes.';
-      }
-    });
+    this.carregandoFeirantes = true;
+
+    this.feiranteService.listar()
+      .pipe(
+        finalize(() => {
+          this.carregandoFeirantes = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (dados) => {
+          this.feirantes = dados;
+        },
+        error: () => {
+          this.mensagem = 'Erro ao listar feirantes.';
+        }
+      });
   }
 
   listarCategorias(): void {
-    this.categoriaService.listar().subscribe({
-      next: (dados) => {
-        this.categorias = dados;
-      },
-      error: () => {
-        this.mensagem = 'Erro ao carregar categorias.';
-      }
-    });
+    this.carregandoCategorias = true;
+
+    this.categoriaService.listar()
+      .pipe(
+        finalize(() => {
+          this.carregandoCategorias = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (dados) => {
+          this.categorias = dados;
+        },
+        error: () => {
+          this.mensagem = 'Erro ao carregar categorias.';
+        }
+      });
   }
 
   permitirSomenteNumeros(event: KeyboardEvent): void {
-    const tecla = event.key;
+    const teclasPermitidas = [
+      'Backspace',
+      'Delete',
+      'Tab',
+      'ArrowLeft',
+      'ArrowRight'
+    ];
 
-    if (!/^\d$/.test(tecla)) {
+    if (teclasPermitidas.includes(event.key)) {
+      return;
+    }
+
+    if (!/^\d$/.test(event.key)) {
       event.preventDefault();
     }
   }
@@ -88,6 +123,9 @@ export class FeiranteComponent implements OnInit {
   }
 
   salvar(): void {
+    if (this.salvando) {
+      return;
+    }
 
     const cpfNumeros = this.cpf.replace(/\D/g, '');
 
@@ -119,38 +157,58 @@ export class FeiranteComponent implements OnInit {
       categoriaId: this.categoriaId
     };
 
+    this.salvando = true;
+    this.mensagem = '';
+
     if (this.idEmEdicao === null) {
 
-      this.feiranteService.cadastrar(feiranteRequest).subscribe({
-        next: () => {
-          this.mensagem = 'Feirante cadastrado com sucesso.';
-          this.limparFormulario();
-          this.listarFeirantes();
-        },
-        error: (erro) => {
-          this.mensagem =
-            erro.error?.erro || 'Erro ao cadastrar feirante.';
-        }
-      });
+      this.feiranteService.cadastrar(feiranteRequest)
+        .pipe(
+          finalize(() => {
+            this.salvando = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.mensagem = 'Feirante cadastrado com sucesso.';
+            this.limparFormulario();
+            this.listarFeirantes();
+          },
+          error: (erro) => {
+            this.mensagem =
+              erro.error?.erro || 'Erro ao cadastrar feirante.';
+          }
+        });
 
     } else {
 
-      this.feiranteService.atualizar(this.idEmEdicao, feiranteRequest).subscribe({
-        next: () => {
-          this.idEmEdicao = null;
-          this.limparFormulario();
-          this.mensagem = 'Feirante atualizado com sucesso.';
-          this.listarFeirantes();
-        },
-        error: (erro) => {
-          this.mensagem =
-            erro.error?.erro || 'Erro ao atualizar feirante.';
-        }
-      });
+      this.feiranteService.atualizar(this.idEmEdicao, feiranteRequest)
+        .pipe(
+          finalize(() => {
+            this.salvando = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.mensagem = 'Feirante atualizado com sucesso.';
+            this.limparFormulario();
+            this.listarFeirantes();
+          },
+          error: (erro) => {
+            this.mensagem =
+              erro.error?.erro || 'Erro ao atualizar feirante.';
+          }
+        });
     }
   }
 
   editar(feirante: Feirante): void {
+    if (this.salvando || this.excluindoId !== null) {
+      return;
+    }
+
     this.nome = feirante.nome;
     this.cpf = feirante.cpf;
     this.formatarCpf();
@@ -163,23 +221,33 @@ export class FeiranteComponent implements OnInit {
   excluir(feirante: Feirante): void {
     const confirmar = confirm('Tem certeza que deseja excluir este feirante?');
 
-    if (!confirmar) {
+    if (!confirmar || this.excluindoId !== null) {
       return;
     }
 
-    this.feiranteService.excluir(feirante.id).subscribe({
-      next: () => {
-        this.mensagem = 'Feirante excluído com sucesso.';
-        this.listarFeirantes();
+    this.excluindoId = feirante.id;
+    this.mensagem = '';
 
-        if (this.idEmEdicao === feirante.id) {
-          this.cancelarEdicao();
+    this.feiranteService.excluir(feirante.id)
+      .pipe(
+        finalize(() => {
+          this.excluindoId = null;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.mensagem = 'Feirante excluído com sucesso.';
+          this.listarFeirantes();
+
+          if (this.idEmEdicao === feirante.id) {
+            this.cancelarEdicao();
+          }
+        },
+        error: () => {
+          this.mensagem = 'Erro ao excluir feirante.';
         }
-      },
-      error: () => {
-        this.mensagem = 'Erro ao excluir feirante.';
-      }
-    });
+      });
   }
 
   cancelarEdicao(): void {
@@ -193,5 +261,14 @@ export class FeiranteComponent implements OnInit {
     this.cpf = '';
     this.ativo = true;
     this.categoriaId = null;
+    this.idEmEdicao = null;
+  }
+
+  textoBotaoSalvar(): string {
+    if (this.salvando) {
+      return this.idEmEdicao === null ? 'Cadastrando...' : 'Atualizando...';
+    }
+
+    return this.idEmEdicao === null ? 'Salvar Feirante' : 'Atualizar Feirante';
   }
 }

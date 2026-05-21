@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { LoginResponse } from '../models/login-response';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private apiUrl = 'https://feira-fullstack.onrender.com/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   private tokenKey = 'token';
 

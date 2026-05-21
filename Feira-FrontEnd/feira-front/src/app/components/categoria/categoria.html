@@ -71,9 +71,10 @@
         <button
           type="button"
           class="primary-button"
+          [disabled]="salvando"
           (click)="salvar()">
 
-          {{ idEmEdicao === null ? 'Salvar Categoria' : 'Atualizar Categoria' }}
+          {{ textoBotaoSalvar() }}
 
         </button>
 
@@ -81,6 +82,7 @@
           *ngIf="idEmEdicao !== null"
           type="button"
           class="secondary-button"
+          [disabled]="salvando"
           (click)="cancelarEdicao()">
 
           Cancelar edição
@@ -111,12 +113,20 @@
       </div>
 
       <p
-        *ngIf="categorias.length === 0"
+        *ngIf="carregandoLista"
+        class="empty-message">
+        Carregando categorias...
+      </p>
+
+      <p
+        *ngIf="!carregandoLista && categorias.length === 0"
         class="empty-message">
         Nenhuma categoria cadastrada.
       </p>
 
-      <div class="category-grid">
+      <div
+        *ngIf="!carregandoLista"
+        class="category-grid">
 
         <article
           *ngFor="let categoria of categorias"
@@ -143,6 +153,7 @@
               <button
                 type="button"
                 class="edit-button"
+                [disabled]="salvando || excluindoId !== null"
                 (click)="editar(categoria)">
                 Editar
               </button>
@@ -150,8 +161,11 @@
               <button
                 type="button"
                 class="delete-button"
+                [disabled]="excluindoId === categoria.id"
                 (click)="excluir(categoria)">
-                Excluir
+
+                {{ excluindoId === categoria.id ? 'Excluindo...' : 'Excluir' }}
+
               </button>
 
             </div>
@@ -168,7 +182,7 @@
       </div>
 
       <footer
-        *ngIf="categorias.length > 0"
+        *ngIf="!carregandoLista && categorias.length > 0"
         class="pagination-info">
 
         Exibindo {{ categorias.length }} categoria(s) cadastrada(s)

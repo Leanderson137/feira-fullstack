@@ -116,6 +116,11 @@ button:hover {
   background-color: #05642a;
 }
 
+button:disabled {
+  background-color: #9bbda8;
+  cursor: not-allowed;
+}
+
 .cadastro-link {
   text-align: center;
   margin-top: 22px;

@@ -70,9 +70,10 @@
 
       <button
         type="button"
+        [disabled]="carregando"
         (click)="entrar()">
 
-        Entrar
+        {{ carregando ? 'Entrando...' : 'Entrar' }}
 
       </button>
 

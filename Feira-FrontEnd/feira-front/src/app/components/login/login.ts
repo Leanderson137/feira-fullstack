@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
 
@@ -15,12 +16,11 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
 
   email = '';
-
   senha = '';
-
   mensagem = '';
 
   mostrarSenha = false;
+  carregando = false;
 
   constructor(
     private router: Router,
@@ -29,65 +29,56 @@ export class LoginComponent {
 
   entrar(): void {
 
+    if (this.carregando) {
+      return;
+    }
+
     if (
       this.email.trim() === '' ||
       this.senha.trim() === ''
     ) {
-
-      this.mensagem =
-        'Informe e-mail e senha.';
-
+      this.mensagem = 'Informe e-mail e senha.';
       return;
     }
 
     const emailValido =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      .test(this.email);
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
 
     if (!emailValido) {
-
-      this.mensagem =
-        'E-mail inválido.';
-
+      this.mensagem = 'E-mail inválido.';
       return;
     }
 
     if (this.senha.length < 8) {
-
-      this.mensagem =
-        'A senha deve ter pelo menos 8 caracteres.';
-
+      this.mensagem = 'A senha deve ter pelo menos 8 caracteres.';
       return;
     }
 
-    this.authService.login(
-      this.email,
-      this.senha
-    ).subscribe({
+    this.carregando = true;
+    this.mensagem = '';
 
-      next: (resposta) => {
+    this.authService.login(this.email, this.senha)
+      .pipe(
+        finalize(() => {
+          this.carregando = false;
+        })
+      )
+      .subscribe({
+        next: (resposta) => {
+          this.authService.salvarLogin(
+            resposta.token,
+            resposta.nome
+          );
 
-        this.authService.salvarLogin(
-          resposta.token,
-          resposta.nome
-        );
-
-        this.router.navigate([
-          '/home'
-        ]);
-      },
-
-      error: () => {
-
-        this.mensagem =
-          'E-mail ou senha inválidos.';
-      }
-    });
+          this.router.navigate(['/home']);
+        },
+        error: () => {
+          this.mensagem = 'E-mail ou senha inválidos.';
+        }
+      });
   }
 
   alternarSenha(): void {
-
-    this.mostrarSenha =
-      !this.mostrarSenha;
+    this.mostrarSenha = !this.mostrarSenha;
   }
 }

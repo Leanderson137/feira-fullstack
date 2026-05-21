@@ -154,3 +154,8 @@ button:hover {
 .eye-button:hover {
   background: transparent;
 }
+
+button:disabled {
+  background-color: #9bbda8;
+  cursor: not-allowed;
+}

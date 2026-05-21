@@ -336,6 +336,18 @@ select:focus {
   color: #4c574c;
 }
 
+button:disabled,
+select:disabled,
+input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 @media (max-width: 900px) {
 
   .top-header {

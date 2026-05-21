@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 
 import { Feirante } from '../models/feirante';
 import { FeiranteRequest } from '../models/feirante-request';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeiranteService {
 
-  private apiUrl = 'https://feira-fullstack.onrender.com/feirante';
+  private apiUrl = `${environment.apiUrl}/feirante`;
 
   constructor(private http: HttpClient) {}
 

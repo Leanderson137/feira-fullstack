@@ -21,7 +21,9 @@
         <span class="summary-icon">✓</span>
         <div>
           <small>Ativos</small>
-          <strong>{{ feirantes.length }} registros</strong>
+          <strong>
+            {{ feirantes.length }} registros
+          </strong>
         </div>
       </div>
 
@@ -74,10 +76,11 @@
 
           <select
             name="categoriaId"
+            [disabled]="carregandoCategorias || salvando"
             [(ngModel)]="categoriaId">
 
             <option [ngValue]="null">
-              Selecione uma categoria
+              {{ carregandoCategorias ? 'Carregando categorias...' : 'Selecione uma categoria' }}
             </option>
 
             <option
@@ -95,6 +98,7 @@
           <input
             type="checkbox"
             name="ativo"
+            [disabled]="salvando"
             [(ngModel)]="ativo">
 
           <label>Feirante ativo</label>
@@ -103,9 +107,10 @@
         <button
           type="button"
           class="primary-button"
+          [disabled]="salvando"
           (click)="salvar()">
 
-          {{ idEmEdicao === null ? 'Salvar Feirante' : 'Atualizar Feirante' }}
+          {{ textoBotaoSalvar() }}
 
         </button>
 
@@ -113,6 +118,7 @@
           *ngIf="idEmEdicao !== null"
           type="button"
           class="secondary-button"
+          [disabled]="salvando"
           (click)="cancelarEdicao()">
 
           Cancelar edição
@@ -143,12 +149,20 @@
       </div>
 
       <p
-        *ngIf="feirantes.length === 0"
+        *ngIf="carregandoFeirantes"
+        class="empty-message">
+        Carregando feirantes...
+      </p>
+
+      <p
+        *ngIf="!carregandoFeirantes && feirantes.length === 0"
         class="empty-message">
         Nenhum feirante cadastrado.
       </p>
 
-      <div class="vendor-grid">
+      <div
+        *ngIf="!carregandoFeirantes"
+        class="vendor-grid">
 
         <article
           *ngFor="let feirante of feirantes"
@@ -188,6 +202,7 @@
               <button
                 type="button"
                 class="edit-button"
+                [disabled]="salvando || excluindoId !== null"
                 (click)="editar(feirante)">
                 Editar
               </button>
@@ -195,8 +210,11 @@
               <button
                 type="button"
                 class="delete-button"
+                [disabled]="excluindoId === feirante.id"
                 (click)="excluir(feirante)">
-                Excluir
+
+                {{ excluindoId === feirante.id ? 'Excluindo...' : 'Excluir' }}
+
               </button>
 
             </div>
@@ -208,7 +226,7 @@
       </div>
 
       <footer
-        *ngIf="feirantes.length > 0"
+        *ngIf="!carregandoFeirantes && feirantes.length > 0"
         class="pagination-info">
 
         Exibindo {{ feirantes.length }} feirante(s) cadastrado(s)

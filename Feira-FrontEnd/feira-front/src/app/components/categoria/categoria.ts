@@ -1,8 +1,7 @@
-//
-
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs';
 
 import { Categoria } from '../../models/categoria';
 import { CategoriaRequest } from '../../models/categoria-request';
@@ -25,24 +24,44 @@ export class CategoriaComponent implements OnInit {
 
   categorias: Categoria[] = [];
 
-  constructor(private categoriaService: CategoriaService) {}
+  carregandoLista = false;
+  salvando = false;
+  excluindoId: number | null = null;
+
+  constructor(
+    private categoriaService: CategoriaService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.listarCategorias();
   }
 
   listarCategorias(): void {
-    this.categoriaService.listar().subscribe({
-      next: (dados) => {
-        this.categorias = dados;
-      },
-      error: () => {
-        this.mensagem = 'Erro ao listar categorias.';
-      }
-    });
+    this.carregandoLista = true;
+
+    this.categoriaService.listar()
+      .pipe(
+        finalize(() => {
+          this.carregandoLista = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (dados) => {
+          this.categorias = dados;
+        },
+        error: () => {
+          this.mensagem = 'Erro ao listar categorias.';
+        }
+      });
   }
 
   salvar(): void {
+    if (this.salvando) {
+      return;
+    }
+
     if (this.nome.trim() === '' || this.descricao.trim() === '') {
       this.mensagem = 'Preencha todos os campos obrigatórios.';
       return;
@@ -58,32 +77,58 @@ export class CategoriaComponent implements OnInit {
       descricao: this.descricao.trim()
     };
 
+    this.salvando = true;
+    this.mensagem = '';
+
     if (this.idEmEdicao === null) {
-      this.categoriaService.cadastrar(categoriaRequest).subscribe({
-        next: () => {
-          this.mensagem = 'Categoria cadastrada com sucesso.';
-          this.limparFormulario();
-          this.listarCategorias();
-        },
-        error: (erro) => {
-          this.mensagem = erro.error?.erro || 'Erro ao cadastrar categoria.';
-        }
-      });
+
+      this.categoriaService.cadastrar(categoriaRequest)
+        .pipe(
+          finalize(() => {
+            this.salvando = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.mensagem = 'Categoria cadastrada com sucesso.';
+            this.limparFormulario();
+            this.listarCategorias();
+          },
+          error: (erro) => {
+            this.mensagem =
+              erro.error?.erro || 'Erro ao cadastrar categoria.';
+          }
+        });
+
     } else {
-      this.categoriaService.atualizar(this.idEmEdicao, categoriaRequest).subscribe({
-        next: () => {
-          this.mensagem = 'Categoria atualizada com sucesso.';
-          this.limparFormulario();
-          this.listarCategorias();
-        },
-        error: (erro) => {
-          this.mensagem = erro.error?.erro || 'Erro ao atualizar categoria.';
-        }
-      });
+
+      this.categoriaService.atualizar(this.idEmEdicao, categoriaRequest)
+        .pipe(
+          finalize(() => {
+            this.salvando = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.mensagem = 'Categoria atualizada com sucesso.';
+            this.limparFormulario();
+            this.listarCategorias();
+          },
+          error: (erro) => {
+            this.mensagem =
+              erro.error?.erro || 'Erro ao atualizar categoria.';
+          }
+        });
     }
   }
 
   editar(categoria: Categoria): void {
+    if (this.salvando || this.excluindoId !== null) {
+      return;
+    }
+
     this.idEmEdicao = categoria.id;
     this.nome = categoria.nome;
     this.descricao = categoria.descricao;
@@ -93,22 +138,32 @@ export class CategoriaComponent implements OnInit {
   excluir(categoria: Categoria): void {
     const confirmar = confirm('Tem certeza que deseja excluir esta categoria?');
 
-    if (!confirmar) {
+    if (!confirmar || this.excluindoId !== null) {
       return;
     }
 
-    this.categoriaService.excluir(categoria.id).subscribe({
-      next: () => {
-        this.mensagem = 'Categoria excluída com sucesso.';
-        this.listarCategorias();
-      },
-      error: (erro) => {
-        this.mensagem =
-          erro.error?.erro ||
-          erro.error?.message ||
-          'Não foi possível excluir a categoria.';
-      }
-    });
+    this.excluindoId = categoria.id;
+    this.mensagem = '';
+
+    this.categoriaService.excluir(categoria.id)
+      .pipe(
+        finalize(() => {
+          this.excluindoId = null;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.mensagem = 'Categoria excluída com sucesso.';
+          this.listarCategorias();
+        },
+        error: (erro) => {
+          this.mensagem =
+            erro.error?.erro ||
+            erro.error?.message ||
+            'Não foi possível excluir a categoria.';
+        }
+      });
   }
 
   cancelarEdicao(): void {
@@ -120,5 +175,13 @@ export class CategoriaComponent implements OnInit {
     this.nome = '';
     this.descricao = '';
     this.idEmEdicao = null;
+  }
+
+  textoBotaoSalvar(): string {
+    if (this.salvando) {
+      return this.idEmEdicao === null ? 'Cadastrando...' : 'Atualizando...';
+    }
+
+    return this.idEmEdicao === null ? 'Cadastrar' : 'Atualizar';
   }
 }

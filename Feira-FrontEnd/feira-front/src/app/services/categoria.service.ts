@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 
 import { Categoria } from '../models/categoria';
 import { CategoriaRequest } from '../models/categoria-request';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriaService {
 
-  private apiUrl = 'https://feira-fullstack.onrender.com/categoria';
+  private apiUrl = `${environment.apiUrl}/categoria`;
 
   constructor(private http: HttpClient) {}
 
