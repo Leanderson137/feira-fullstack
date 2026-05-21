@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -24,7 +24,8 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   entrar(): void {
@@ -57,14 +58,19 @@ export class LoginComponent {
     this.carregando = true;
     this.mensagem = '';
 
-    this.authService.login(this.email, this.senha)
+    this.authService.login(
+      this.email,
+      this.senha
+    )
       .pipe(
         finalize(() => {
           this.carregando = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({
         next: (resposta) => {
+
           this.authService.salvarLogin(
             resposta.token,
             resposta.nome
@@ -72,13 +78,18 @@ export class LoginComponent {
 
           this.router.navigate(['/home']);
         },
+
         error: () => {
+
           this.mensagem = 'E-mail ou senha inválidos.';
+          this.carregando = false;
+          this.cdr.detectChanges();
         }
       });
   }
 
   alternarSenha(): void {
+
     this.mostrarSenha = !this.mostrarSenha;
   }
 }

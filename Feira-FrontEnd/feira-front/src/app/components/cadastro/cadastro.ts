@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -27,7 +27,8 @@ export class CadastroComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   cadastrar(): void {
@@ -87,6 +88,7 @@ export class CadastroComponent {
           .pipe(
             finalize(() => {
               this.carregando = false;
+              this.cdr.detectChanges();
             })
           )
           .subscribe({
@@ -102,7 +104,10 @@ export class CadastroComponent {
             },
 
             error: () => {
+
               this.mensagem = 'Usuário cadastrado, mas houve erro ao entrar.';
+              this.carregando = false;
+              this.cdr.detectChanges();
             }
           });
       },
@@ -114,6 +119,7 @@ export class CadastroComponent {
           'Erro ao cadastrar usuário.';
 
         this.carregando = false;
+        this.cdr.detectChanges();
       }
     });
   }
