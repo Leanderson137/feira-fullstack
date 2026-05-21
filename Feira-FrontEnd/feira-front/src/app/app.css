@@ -19,9 +19,6 @@
   flex-direction: column;
   box-shadow: 4px 0 18px rgba(0, 0, 0, 0.04);
   transition: 0.25s;
-  position: sticky;
-  top: 0;
-  height: 100vh;
 }
 
 .sidebar.minimizada {
@@ -143,7 +140,6 @@
   overflow-x: hidden;
 }
 
-/* Tablet */
 @media (max-width: 900px) {
 
   .layout {
@@ -153,13 +149,10 @@
   .sidebar,
   .sidebar.minimizada {
     width: 100%;
-    height: auto;
-    position: sticky;
-    top: 0;
-    z-index: 20;
+    min-height: auto;
     border-right: none;
     border-bottom: 1px solid #e8ece8;
-    padding: 14px 18px;
+    padding: 14px 16px;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
   }
 
@@ -186,27 +179,28 @@
     padding: 10px 12px;
   }
 
+  .usuario-box strong {
+    font-size: 14px;
+  }
+
   .menu {
     flex-direction: row;
-    gap: 8px;
+    flex-wrap: nowrap;
     overflow-x: auto;
+    gap: 8px;
     padding-bottom: 4px;
-  }
-
-  .menu::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .menu::-webkit-scrollbar-thumb {
-    background-color: #d8dfd8;
-    border-radius: 999px;
   }
 
   .menu a,
   .logout-button {
     flex: 0 0 auto;
-    padding: 12px 14px;
+    padding: 11px 13px;
     font-size: 14px;
+  }
+
+  .menu a span:first-child,
+  .logout-button span:first-child {
+    font-size: 17px;
   }
 
   .content {
@@ -214,35 +208,11 @@
   }
 }
 
-/* Celular */
 @media (max-width: 600px) {
 
   .sidebar,
   .sidebar.minimizada {
     padding: 12px;
-  }
-
-  .top-sidebar {
-    align-items: center;
-  }
-
-  .logo-area {
-    gap: 10px;
-  }
-
-  .logo-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    font-size: 18px;
-  }
-
-  .logo-area h2 {
-    font-size: 20px;
-  }
-
-  .logo-area small {
-    font-size: 11px;
   }
 
   .toggle-button {
@@ -251,59 +221,9 @@
     font-size: 16px;
   }
 
-  .usuario-box {
+  .menu a,
+  .logout-button {
     padding: 10px 12px;
-    margin-bottom: 10px;
-  }
-
-  .usuario-box strong {
-    font-size: 14px;
-  }
-
-  .menu {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(72px, 1fr));
-    gap: 8px;
-    overflow-x: visible;
-  }
-
-  .menu a,
-  .logout-button {
-    justify-content: center;
-    flex-direction: column;
-    gap: 4px;
-    padding: 10px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    min-height: 58px;
-    text-align: center;
-  }
-
-  .menu a span:first-child,
-  .logout-button span:first-child {
-    font-size: 18px;
-  }
-}
-
-/* Celular muito pequeno */
-@media (max-width: 420px) {
-
-  .menu {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-  }
-
-  .menu a,
-  .logout-button {
-    font-size: 11px;
-    padding: 9px 6px;
-  }
-
-  .logo-area h2 {
-    font-size: 18px;
-  }
-
-  .usuario-box strong {
     font-size: 13px;
   }
 }
