@@ -1,85 +1,169 @@
 <section class="home-page">
 
-  <section class="hero">
+  <section class="welcome-card">
 
-    <div class="hero-content">
+    <div class="welcome-content">
 
-      <span class="eyebrow">
+      <span class="tag">
         Sistema Feira
       </span>
 
       <h1>
-        Gerencie sua feira com mais organização
+        Painel de gerenciamento
       </h1>
 
       <p>
-        Cadastre feirantes, organize categorias e acompanhe as informações
-        principais do sistema de forma simples e prática.
+        Acompanhe seus feirantes, organize categorias e mantenha os dados da sua feira sempre atualizados.
       </p>
 
-      <div class="hero-actions">
+      <div class="actions">
 
         <a
           routerLink="/feirantes"
           class="primary-link">
-          Acessar Feirantes
+          Gerenciar feirantes
         </a>
 
         <a
           routerLink="/categorias"
           class="secondary-link">
-          Acessar Categorias
+          Gerenciar categorias
         </a>
 
       </div>
 
     </div>
 
+    <div class="hero-stats">
+
+      <article class="stat-card">
+
+        <div class="stat-icon">
+          👥
+        </div>
+
+        <div>
+          <small>Feirantes</small>
+          <strong>{{ totalFeirantes() }}</strong>
+          <p>Total cadastrado</p>
+        </div>
+
+      </article>
+
+      <article class="stat-card">
+
+        <div class="stat-icon">
+          🗂️
+        </div>
+
+        <div>
+          <small>Categorias</small>
+          <strong>{{ totalCategorias() }}</strong>
+          <p>Setores organizados</p>
+        </div>
+
+      </article>
+
+      <article class="stat-card">
+
+        <div class="stat-icon active">
+          ✓
+        </div>
+
+        <div>
+          <small>Ativos</small>
+          <strong>{{ totalAtivos() }}</strong>
+          <p>Feirantes ativos</p>
+        </div>
+
+      </article>
+
+      <article class="stat-card">
+
+        <div class="stat-icon inactive">
+          —
+        </div>
+
+        <div>
+          <small>Inativos</small>
+          <strong>{{ totalInativos() }}</strong>
+          <p>Feirantes inativos</p>
+        </div>
+
+      </article>
+
+    </div>
+
   </section>
 
-  <section class="features">
+  <section class="quick-access">
 
-    <a
-      routerLink="/feirantes"
-      class="feature-card">
+    <div class="section-header">
 
-      <div class="feature-icon">
-        👥
+      <div>
+        <h2>Acesso rápido</h2>
+        <p>Escolha uma área para continuar gerenciando o sistema.</p>
       </div>
 
-      <h2>Feirantes</h2>
-
-      <p>
-        Cadastre, consulte, edite e remova feirantes vinculados
-        às categorias da feira.
-      </p>
-
-      <span class="feature-link">
-        Abrir tela →
+      <span
+        *ngIf="carregando()"
+        class="loading">
+        Atualizando dados...
       </span>
 
-    </a>
+    </div>
 
-    <a
-      routerLink="/categorias"
-      class="feature-card">
+    <p
+      *ngIf="mensagem"
+      class="message">
+      {{ mensagem }}
+    </p>
 
-      <div class="feature-icon">
-        🗂️
-      </div>
+    <div class="access-grid">
 
-      <h2>Categorias</h2>
+      <a
+        routerLink="/feirantes"
+        class="access-card">
 
-      <p>
-        Organize os tipos de produtos e setores utilizados pelos feirantes
-        no sistema.
-      </p>
+        <div class="access-icon">
+          👥
+        </div>
 
-      <span class="feature-link">
-        Abrir tela →
-      </span>
+        <div>
+          <h3>Feirantes</h3>
+          <p>
+            Cadastre, edite e acompanhe os vendedores vinculados à sua feira.
+          </p>
+        </div>
 
-    </a>
+        <span>
+          →
+        </span>
+
+      </a>
+
+      <a
+        routerLink="/categorias"
+        class="access-card">
+
+        <div class="access-icon">
+          🗂️
+        </div>
+
+        <div>
+          <h3>Categorias</h3>
+          <p>
+            Organize os setores e tipos de produtos utilizados pelos feirantes.
+          </p>
+        </div>
+
+        <span>
+          →
+        </span>
+
+      </a>
+
+    </div>
 
   </section>
 
