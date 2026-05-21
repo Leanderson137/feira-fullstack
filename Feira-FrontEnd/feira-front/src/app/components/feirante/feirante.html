@@ -55,6 +55,7 @@
             type="text"
             name="nome"
             placeholder="Ex: João da Silva"
+            autocomplete="off"
             [(ngModel)]="nome">
         </div>
 
@@ -66,6 +67,7 @@
             name="cpf"
             maxlength="14"
             placeholder="000.000.000-00"
+            autocomplete="off"
             [(ngModel)]="cpf"
             (keypress)="permitirSomenteNumeros($event)"
             (input)="formatarCpf()">

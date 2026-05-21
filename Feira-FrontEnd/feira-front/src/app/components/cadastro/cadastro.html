@@ -42,6 +42,7 @@
           type="text"
           name="nome"
           placeholder="Digite seu nome"
+          autocomplete="off"
           [(ngModel)]="nome">
 
       </div>
@@ -54,6 +55,7 @@
           type="email"
           name="email"
           placeholder="exemplo@email.com"
+          autocomplete="off"
           [(ngModel)]="email">
 
       </div>
@@ -68,6 +70,7 @@
             [type]="mostrarSenha ? 'text' : 'password'"
             name="senha"
             placeholder="Mínimo de 8 caracteres"
+            autocomplete="off"
             [(ngModel)]="senha">
 
           <button
@@ -93,6 +96,7 @@
             [type]="mostrarConfirmarSenha ? 'text' : 'password'"
             name="confirmarSenha"
             placeholder="Repita a senha"
+            autocomplete="off"
             [(ngModel)]="confirmarSenha">
 
           <button

@@ -39,6 +39,7 @@
           type="email"
           name="email"
           placeholder="exemplo@email.com"
+          autocomplete="off"
           [(ngModel)]="email">
 
       </div>
@@ -53,6 +54,7 @@
             [type]="mostrarSenha ? 'text' : 'password'"
             name="senha"
             placeholder="Digite sua senha"
+            autocomplete="off"
             [(ngModel)]="senha">
 
           <button
