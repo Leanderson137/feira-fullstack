@@ -2,7 +2,7 @@
 
 Sistema web full stack para gerenciamento de feirantes e categorias, desenvolvido com **Angular** no front-end e **Spring Boot** no back-end.
 
-O projeto possui autenticação com JWT, proteção de rotas, CRUD completo, isolamento de dados por usuário, dashboard, documentação Swagger/OpenAPI, testes automatizados com JUnit e Mockito, backend dockerizado e deploy em nuvem.
+O projeto possui autenticação com JWT, proteção de rotas, CRUD completo, isolamento de dados por usuário, dashboard, documentação Swagger/OpenAPI, testes automatizados com JUnit, Mockito, MockMvc e @DataJpaTest, backend dockerizado e deploy em nuvem.
 
 ---
 
@@ -17,14 +17,25 @@ O projeto possui autenticação com JWT, proteção de rotas, CRUD completo, iso
 - [Front-end](#front-end)
 - [Autenticação e Segurança](#autenticação-e-segurança)
 - [Isolamento de Dados por Usuário](#isolamento-de-dados-por-usuário)
+- [Banco de Dados](#banco-de-dados)
+- [Ambientes Local e Produção](#ambientes-local-e-produção)
+- [Dashboard](#dashboard)
+- [Responsividade](#responsividade)
+- [Feedback Visual](#feedback-visual)
 - [Swagger/OpenAPI](#swaggeropenapi)
+- [Docker](#docker)
 - [Testes Automatizados](#testes-automatizados)
 - [Deploy](#deploy)
+- [Variáveis de Ambiente](#variáveis-de-ambiente)
 - [Como Rodar Localmente](#como-rodar-localmente)
+- [Comandos Úteis](#comandos-úteis)
 - [Endpoints Principais](#endpoints-principais)
 - [Exemplos de Requisições](#exemplos-de-requisições)
 - [Regras de Negócio](#regras-de-negócio)
+- [Tratamento de Erros](#tratamento-de-erros)
+- [Diferenciais Técnicos](#diferenciais-técnicos)
 - [Possíveis Melhorias Futuras](#possíveis-melhorias-futuras)
+- [Status do Projeto](#status-do-projeto)
 - [Autor](#autor)
 
 ---
@@ -46,7 +57,9 @@ O projeto foi desenvolvido com foco em:
 - integração real entre Angular e Spring Boot;
 - deploy em nuvem;
 - testes automatizados;
-- documentação da API.
+- documentação da API;
+- responsividade;
+- experiência de uso com feedback visual.
 
 ---
 
@@ -139,8 +152,10 @@ https://github.com/Leanderson137/feira-fullstack
 ### Documentação e Qualidade
 
 - Swagger/OpenAPI para documentação da API.
-- Testes unitários com JUnit.
-- Testes de services com Mockito.
+- Testes automatizados com JUnit.
+- Testes de service com Mockito.
+- Testes de repository com @DataJpaTest.
+- Testes de controller com MockMvc.
 - Backend dockerizado.
 - Deploy do front-end na Vercel.
 - Deploy do back-end no Render.
@@ -176,6 +191,8 @@ https://github.com/Leanderson137/feira-fullstack
 - Swagger/OpenAPI
 - JUnit
 - Mockito
+- MockMvc
+- @DataJpaTest
 
 ### Banco de Dados
 
@@ -240,7 +257,9 @@ Feira-BackEnd
     │           └── com
     │               └── leanderson
     │                   └── feira
+    │                       ├── controller
     │                       ├── entity
+    │                       ├── repository
     │                       └── service
     │
     ├── Dockerfile
@@ -666,72 +685,6 @@ GET /usuarios
 
 ---
 
-## Testes Automatizados
-
-O projeto possui testes automatizados com JUnit e Mockito.
-
-### Testes de entidade
-
-Foram criados testes para validar regras internas das entidades:
-
-- `CategoriaTest`
-- `FeiranteTest`
-
-Validações testadas:
-
-- categoria válida;
-- nome de categoria com menos de 3 caracteres;
-- descrição de categoria vazia;
-- feirante válido;
-- nome de feirante com menos de 3 caracteres;
-- CPF vazio;
-- CPF com quantidade inválida de dígitos;
-- categoria obrigatória para feirante.
-
-### Testes de service com Mockito
-
-Foram criados testes para validar regras de negócio simulando repositories:
-
-- `CategoriaServiceTest`
-- `FeiranteServiceTest`
-
-Validações testadas:
-
-- criação de categoria com sucesso;
-- bloqueio de categoria duplicada;
-- listagem de categorias do usuário logado;
-- remoção de categoria quando não está em uso;
-- bloqueio de remoção de categoria em uso;
-- criação de feirante com sucesso;
-- bloqueio de CPF duplicado;
-- bloqueio ao usar categoria de outro usuário;
-- listagem de feirantes do usuário logado;
-- remoção de feirante do usuário logado;
-- bloqueio ao remover feirante de outro usuário.
-
-### Resultado dos testes
-
-Resultado atual:
-
-```txt
-Tests run: 20
-Failures: 0
-Errors: 0
-Skipped: 0
-BUILD SUCCESS
-```
-
-### Rodar testes
-
-Na pasta do back-end:
-
-```bash
-cd Feira-BackEnd/feira-back
-.\mvnw test
-```
-
----
-
 ## Docker
 
 O back-end possui Dockerfile para build e execução da aplicação.
@@ -746,6 +699,197 @@ Fluxo geral:
 3. O Maven gera o arquivo .jar.
 4. A aplicação Spring Boot é iniciada dentro do container.
 5. A API fica disponível publicamente.
+```
+
+---
+
+## Testes Automatizados
+
+O projeto possui testes automatizados cobrindo diferentes camadas da aplicação, utilizando **JUnit**, **Mockito**, **MockMvc** e **@DataJpaTest**.
+
+A suíte de testes foi criada para validar desde regras internas das entidades até regras de negócio, persistência em repository e comportamento dos controllers.
+
+### Tecnologias usadas nos testes
+
+- JUnit
+- Mockito
+- MockMvc
+- DataJpaTest
+- Maven Test
+- H2 Database para testes de persistência
+
+---
+
+### Testes de Entidade
+
+Foram criados testes unitários para validar as regras internas das entidades.
+
+Arquivos:
+
+```txt
+CategoriaTest
+FeiranteTest
+UsuarioTest
+```
+
+Esses testes validam regras como:
+
+- categoria válida;
+- nome de categoria com menos de 3 caracteres;
+- descrição de categoria vazia;
+- feirante válido;
+- nome de feirante com menos de 3 caracteres;
+- CPF vazio;
+- CPF com quantidade inválida de dígitos;
+- categoria obrigatória para feirante;
+- usuário válido;
+- nome de usuário inválido;
+- e-mail obrigatório;
+- senha com menos de 8 caracteres.
+
+---
+
+### Testes de Service com Mockito
+
+Foram criados testes unitários para validar regras de negócio dos services, utilizando Mockito para simular os repositories e dependências externas.
+
+Arquivos:
+
+```txt
+CategoriaServiceTest
+FeiranteServiceTest
+UsuarioServiceTest
+AuthServiceTest
+```
+
+Esses testes validam regras como:
+
+- criação de categoria com sucesso;
+- bloqueio de categoria duplicada;
+- listagem de categorias do usuário logado;
+- remoção de categoria;
+- bloqueio de remoção de categoria em uso;
+- criação de feirante com sucesso;
+- bloqueio de CPF duplicado;
+- impedimento de usar categoria pertencente a outro usuário;
+- listagem de feirantes do usuário logado;
+- remoção de feirante;
+- impedimento de remover feirante de outro usuário;
+- listagem de usuários;
+- remoção de usuário;
+- erro ao remover usuário inexistente;
+- cadastro de usuário;
+- bloqueio de e-mail duplicado no cadastro;
+- login com sucesso;
+- erro ao tentar login com e-mail inexistente;
+- erro ao tentar login com senha incorreta.
+
+---
+
+### Testes de Repository com @DataJpaTest
+
+Foram criados testes para validar a camada de persistência com repositories reais, usando banco H2 em ambiente de teste.
+
+Arquivos:
+
+```txt
+UsuarioRepositoryTest
+CategoriaRepositoryTest
+FeiranteRepositoryTest
+```
+
+Esses testes validam métodos como:
+
+```txt
+findByEmail
+existsByEmail
+findByUsuarioEmail
+existsByNomeAndUsuarioEmail
+existsByCpfAndUsuarioEmail
+existsByCategoriaId
+```
+
+Também validam o isolamento de dados por usuário, garantindo que registros de um usuário não sejam retornados para outro.
+
+---
+
+### Testes de Controller com MockMvc
+
+Foram criados testes para validar os endpoints dos controllers de forma isolada, utilizando MockMvc e services simulados com Mockito.
+
+Arquivos:
+
+```txt
+AuthControllerTest
+CategoriaControllerTest
+FeiranteControllerTest
+UsuarioControllerTest
+```
+
+Esses testes validam endpoints como:
+
+```txt
+POST /auth/cadastrar
+POST /auth/login
+
+GET /categoria
+GET /categoria/{id}
+POST /categoria
+PUT /categoria/{id}
+DELETE /categoria/{id}
+
+GET /feirante
+GET /feirante/{id}
+POST /feirante
+PUT /feirante/{id}
+DELETE /feirante/{id}
+
+GET /usuarios
+DELETE /usuarios/{id}
+```
+
+Os testes verificam:
+
+- status HTTP retornado;
+- JSON de resposta;
+- chamada correta dos services;
+- criação, busca, atualização e remoção de recursos;
+- login e cadastro via controller.
+
+---
+
+### Resultado Atual dos Testes
+
+Resultado da última execução:
+
+```txt
+Tests run: 56
+Failures: 0
+Errors: 0
+Skipped: 0
+BUILD SUCCESS
+```
+
+---
+
+### Como Rodar os Testes
+
+Na pasta do back-end:
+
+```bash
+cd Feira-BackEnd/feira-back
+```
+
+No Windows PowerShell:
+
+```bash
+.\mvnw test
+```
+
+Em Linux/macOS:
+
+```bash
+./mvnw test
 ```
 
 ---
@@ -1083,8 +1227,8 @@ Este projeto possui diferenciais importantes para um projeto de portfólio:
 - tratamento global de exceções;
 - validações de negócio;
 - Swagger/OpenAPI;
-- JUnit;
-- Mockito;
+- testes automatizados em múltiplas camadas: entity, service, repository e controller;
+- JUnit, Mockito, MockMvc e @DataJpaTest;
 - Docker;
 - deploy na Vercel;
 - deploy no Render;
@@ -1106,8 +1250,7 @@ Algumas melhorias que podem ser implementadas futuramente:
 - busca e filtros;
 - ordenação;
 - upload de foto para feirantes;
-- testes de controller;
-- testes de integração;
+- ampliar testes de integração;
 - testes end-to-end;
 - CI/CD com GitHub Actions;
 - melhorias de acessibilidade;
@@ -1131,7 +1274,7 @@ CRUD: funcional
 Multiusuário: funcional
 Dashboard: funcional
 Swagger: funcional
-Testes: 20 testes passando
+Testes: 56 testes passando
 Deploy: funcional
 Responsividade: implementada
 Docker: implementado
